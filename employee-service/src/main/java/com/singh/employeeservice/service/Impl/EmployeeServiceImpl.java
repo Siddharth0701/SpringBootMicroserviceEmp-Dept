@@ -5,6 +5,7 @@ import com.singh.employeeservice.dto.DepartmentDto;
 import com.singh.employeeservice.dto.EmployeeDto;
 import com.singh.employeeservice.entity.Employee;
 import com.singh.employeeservice.repository.EmployeeRepository;
+import com.singh.employeeservice.service.APIClient;
 import com.singh.employeeservice.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
 //    @Autowired
 //    private RestTemplate restTemplate;
+//    @Autowired
+//    private WebClient webClient;
     @Autowired
-    private WebClient webClient;
+    private APIClient apiClient;
     @Override
     public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
         Employee employee=new Employee(
@@ -45,7 +48,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee=employeeRepository.findById(employeeId).get();
 //        ResponseEntity<DepartmentDto> restTemplateForEntity = restTemplate.getForEntity("http://localhost:8080/api/departments/" + employee.getDepartmentCode(), DepartmentDto.class);
 //        DepartmentDto departmentDto=restTemplateForEntity.getBody();
-        DepartmentDto departmentDto=  webClient.get().uri("http://localhost:8080/api/departments/"+employee.getDepartmentCode()).retrieve().bodyToMono(DepartmentDto.class).block();
+       // DepartmentDto departmentDto=  webClient.get().uri("http://localhost:8080/api/departments/"+employee.getDepartmentCode()).retrieve().bodyToMono(DepartmentDto.class).block();
+        DepartmentDto departmentDto = apiClient.getDepartmentByCode(employee.getDepartmentCode());
         EmployeeDto employeeDto=new EmployeeDto(
           employee.getId(),
           employee.getFirstName(),
